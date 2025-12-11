@@ -1,0 +1,1605 @@
+type: collection.insomnia.rest/5.0
+name: MangoMusic API
+meta:
+    id: fld_mangomusic
+    created: 1733443200000
+    modified: 1733443200000
+    description: "Complete MangoMusic Spring Boot REST API Collection"
+collection:
+    - name: MangoMusic API
+      meta:
+          id: fld_mangomusic_main
+          created: 1733443200000
+          modified: 1733443200000
+          sortKey: -1733443200000
+          description: ""
+      children:
+          - url: "{{baseUrl}}/"
+            name: Home
+            meta:
+                id: req_home
+                created: 1733443200001
+                modified: 1733443200001
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200001
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Home endpoint should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should contain message', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.have.property('message');
+                    });
+                    
+                    insomnia.test('Response should contain endpoints', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.have.property('endpoints');
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/health"
+            name: Health Check
+            meta:
+                id: req_health
+                created: 1733443200002
+                modified: 1733443200002
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200002
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Health check should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Status should be UP', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.status).to.equal('UP');
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/artists"
+            name: Artists - Get All
+            meta:
+                id: req_artists_getall
+                created: 1733443200003
+                modified: 1733443200003
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200003
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get all artists should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('Artists should have required fields', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            insomnia.expect(body[0]).to.have.property('artistId');
+                            insomnia.expect(body[0]).to.have.property('name');
+                            insomnia.expect(body[0]).to.have.property('primaryGenre');
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/artists?search=Beatles"
+            name: Artists - Search
+            meta:
+                id: req_artists_search
+                created: 1733443200004
+                modified: 1733443200004
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200004
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Search artists should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('Results should contain search term', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            const containsBeatles = body.some(artist => artist.name.toLowerCase().includes('beatles'));
+                            insomnia.expect(containsBeatles).to.be.true;
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/artists/1"
+            name: Artists - Get by ID
+            meta:
+                id: req_artists_getbyid
+                created: 1733443200005
+                modified: 1733443200005
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200005
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get artist by ID should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Artist should have correct ID', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.artistId).to.equal(1);
+                    });
+                    
+                    insomnia.test('Artist should have all required fields', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.have.property('name');
+                        insomnia.expect(body).to.have.property('primaryGenre');
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/artists/genres"
+            name: Artists - Get All Genres
+            meta:
+                id: req_artists_genres
+                created: 1733443200006
+                modified: 1733443200006
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200006
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get all genres should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('Genres should be strings', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            insomnia.expect(body[0]).to.be.a('string');
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/artists"
+            name: Artists - Create
+            meta:
+                id: req_artists_create
+                created: 1733443200007
+                modified: 1733443200007
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200007
+            method: POST
+            body:
+                mimeType: application/json
+                text: |
+                    {
+                      "name": "New Test Artist",
+                      "primaryGenre": "rock",
+                      "formedYear": 2020
+                    }
+            headers:
+                - name: Content-Type
+                  value: application/json
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Create artist should return 201', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(201);
+                    });
+                    
+                    insomnia.test('Created artist should have an ID', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.have.property('artistId');
+                        insomnia.expect(body.artistId).to.be.a('number');
+                    });
+                    
+                    insomnia.test('Created artist should match request data', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.name).to.equal('New Test Artist');
+                        insomnia.expect(body.primaryGenre).to.equal('rock');
+                        insomnia.expect(body.formedYear).to.equal(2020);
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/artists/1"
+            name: Artists - Update
+            meta:
+                id: req_artists_update
+                created: 1733443200008
+                modified: 1733443200008
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200008
+            method: PUT
+            body:
+                mimeType: application/json
+                text: |
+                    {
+                      "name": "Updated Artist Name",
+                      "primaryGenre": "pop",
+                      "formedYear": 2021
+                    }
+            headers:
+                - name: Content-Type
+                  value: application/json
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Update artist should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Updated artist should have same ID', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.artistId).to.equal(1);
+                    });
+                    
+                    insomnia.test('Updated artist should reflect changes', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.name).to.equal('Updated Artist Name');
+                        insomnia.expect(body.primaryGenre).to.equal('pop');
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/artists/999"
+            name: Artists - Delete
+            meta:
+                id: req_artists_delete
+                created: 1733443200009
+                modified: 1733443200009
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200009
+            method: DELETE
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Delete non-existent artist should return 404', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(404);
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/artists/1/top-album"
+            name: Artists - Get Top Album
+            meta:
+                id: req_artists_topalbum
+                created: 1733443200043
+                modified: 1733443200043
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200043
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get top album should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should have required fields', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.have.property('albumId');
+                        insomnia.expect(body).to.have.property('title');
+                        insomnia.expect(body).to.have.property('artistName');
+                        insomnia.expect(body).to.have.property('playCount');
+                    });
+                    
+                    insomnia.test('Play count should be positive', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.playCount).to.be.a('number');
+                        insomnia.expect(body.playCount).to.be.at.least(0);
+                    });
+                    
+                    insomnia.test('Artist ID should match requested artist', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.artistId).to.equal(1);
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/albums"
+            name: Albums - Get All
+            meta:
+                id: req_albums_getall
+                created: 1733443200010
+                modified: 1733443200010
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200010
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get all albums should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('Albums should have required fields', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            insomnia.expect(body[0]).to.have.property('albumId');
+                            insomnia.expect(body[0]).to.have.property('title');
+                            insomnia.expect(body[0]).to.have.property('artistId');
+                            insomnia.expect(body[0]).to.have.property('artistName');
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/albums?search=Abbey"
+            name: Albums - Search
+            meta:
+                id: req_albums_search
+                created: 1733443200011
+                modified: 1733443200011
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200011
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Search albums should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('Results should contain search term', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            const containsAbbey = body.some(album => album.title.toLowerCase().includes('abbey'));
+                            insomnia.expect(containsAbbey).to.be.true;
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/albums/1"
+            name: Albums - Get by ID
+            meta:
+                id: req_albums_getbyid
+                created: 1733443200012
+                modified: 1733443200012
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200012
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get album by ID should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Album should have correct ID', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.albumId).to.equal(1);
+                    });
+                    
+                    insomnia.test('Album should have all required fields', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.have.property('title');
+                        insomnia.expect(body).to.have.property('releaseYear');
+                        insomnia.expect(body).to.have.property('artistName');
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/albums/artist/1"
+            name: Albums - Get by Artist ID
+            meta:
+                id: req_albums_byartist
+                created: 1733443200013
+                modified: 1733443200013
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200013
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get albums by artist should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('All albums should belong to artist', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            body.forEach(album => {
+                                insomnia.expect(album.artistId).to.equal(1);
+                            });
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/albums/genre/rock"
+            name: Albums - Get by Genre
+            meta:
+                id: req_albums_bygenre
+                created: 1733443200014
+                modified: 1733443200014
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200014
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get albums by genre should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/albums"
+            name: Albums - Create
+            meta:
+                id: req_albums_create
+                created: 1733443200015
+                modified: 1733443200015
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200015
+            method: POST
+            body:
+                mimeType: application/json
+                text: |
+                    {
+                      "artistId": 1,
+                      "title": "New Test Album",
+                      "releaseYear": 2023
+                    }
+            headers:
+                - name: Content-Type
+                  value: application/json
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Create album should return 201', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(201);
+                    });
+                    
+                    insomnia.test('Created album should have an ID', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.have.property('albumId');
+                        insomnia.expect(body.albumId).to.be.a('number');
+                    });
+                    
+                    insomnia.test('Created album should match request data', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.title).to.equal('New Test Album');
+                        insomnia.expect(body.artistId).to.equal(1);
+                        insomnia.expect(body.releaseYear).to.equal(2023);
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/albums/1"
+            name: Albums - Update
+            meta:
+                id: req_albums_update
+                created: 1733443200016
+                modified: 1733443200016
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200016
+            method: PUT
+            body:
+                mimeType: application/json
+                text: |
+                    {
+                      "artistId": 1,
+                      "title": "Updated Album Title",
+                      "releaseYear": 2024
+                    }
+            headers:
+                - name: Content-Type
+                  value: application/json
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Update album should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Updated album should have same ID', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.albumId).to.equal(1);
+                    });
+                    
+                    insomnia.test('Updated album should reflect changes', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.title).to.equal('Updated Album Title');
+                        insomnia.expect(body.releaseYear).to.equal(2024);
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/albums/999"
+            name: Albums - Delete
+            meta:
+                id: req_albums_delete
+                created: 1733443200017
+                modified: 1733443200017
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200017
+            method: DELETE
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Delete non-existent album should return 404', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(404);
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/albums/1/play-count"
+            name: Albums - Get Play Count
+            meta:
+                id: req_albums_playcount
+                created: 1733443200040
+                modified: 1733443200040
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200040
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get album play count should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should have required fields', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.have.property('albumId');
+                        insomnia.expect(body).to.have.property('albumTitle');
+                        insomnia.expect(body).to.have.property('artistName');
+                        insomnia.expect(body).to.have.property('playCount');
+                    });
+                    
+                    insomnia.test('Play count should be a number', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.playCount).to.be.a('number');
+                        insomnia.expect(body.playCount).to.be.at.least(0);
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/albums/recent?limit=5"
+            name: Albums - Get Recent Releases
+            meta:
+                id: req_albums_recent
+                created: 1733443200041
+                modified: 1733443200041
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200041
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get recent albums should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('Should return at most 5 albums', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.length).to.be.at.most(5);
+                    });
+                    
+                    insomnia.test('Albums should be recent (last 2 years)', function() {
+                        const body = insomnia.response.json();
+                        const currentYear = new Date().getFullYear();
+                        const cutoffYear = currentYear - 2;
+                    
+                        if (body.length > 0) {
+                            body.forEach(album => {
+                                insomnia.expect(album.releaseYear).to.be.at.least(cutoffYear);
+                            });
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/albums/trending?days=7"
+            name: Albums - Get Trending
+            meta:
+                id: req_albums_trending
+                created: 1733443200042
+                modified: 1733443200042
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200042
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get trending albums should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('Should return at most 10 albums', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.length).to.be.at.most(10);
+                    });
+                    
+                    insomnia.test('Albums should have trending data', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            insomnia.expect(body[0]).to.have.property('recentPlayCount');
+                            insomnia.expect(body[0]).to.have.property('trendingRank');
+                            insomnia.expect(body[0].trendingRank).to.equal(1);
+                        }
+                    });
+                    
+                    insomnia.test('Rankings should be sequential', function() {
+                        const body = insomnia.response.json();
+                        body.forEach((album, index) => {
+                            insomnia.expect(album.trendingRank).to.equal(index + 1);
+                        });
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/users"
+            name: Users - Get All
+            meta:
+                id: req_users_getall
+                created: 1733443200018
+                modified: 1733443200018
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200018
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get all users should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('Users should have required fields', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            insomnia.expect(body[0]).to.have.property('userId');
+                            insomnia.expect(body[0]).to.have.property('username');
+                            insomnia.expect(body[0]).to.have.property('email');
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/users?search=john"
+            name: Users - Search
+            meta:
+                id: req_users_search
+                created: 1733443200019
+                modified: 1733443200019
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200019
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Search users should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/users?country=US"
+            name: Users - Get by Country
+            meta:
+                id: req_users_bycountry
+                created: 1733443200020
+                modified: 1733443200020
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200020
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get users by country should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('All users should be from specified country', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            body.forEach(user => {
+                                insomnia.expect(user.country).to.equal('US');
+                            });
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/users?subscription=premium"
+            name: Users - Get by Subscription
+            meta:
+                id: req_users_bysubscription
+                created: 1733443200021
+                modified: 1733443200021
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200021
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get users by subscription should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('All users should have specified subscription', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            body.forEach(user => {
+                                insomnia.expect(user.subscriptionType).to.equal('premium');
+                            });
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/users/1"
+            name: Users - Get by ID
+            meta:
+                id: req_users_getbyid
+                created: 1733443200022
+                modified: 1733443200022
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200022
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get user by ID should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('User should have correct ID', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.userId).to.equal(1);
+                    });
+                    
+                    insomnia.test('User should have all required fields', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.have.property('username');
+                        insomnia.expect(body).to.have.property('email');
+                        insomnia.expect(body).to.have.property('subscriptionType');
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/users"
+            name: Users - Create
+            meta:
+                id: req_users_create
+                created: 1733443200023
+                modified: 1733443200023
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200023
+            method: POST
+            body:
+                mimeType: application/json
+                text: |
+                    {
+                      "username": "testuser123",
+                      "email": "test@example.com",
+                      "signupDate": "2025-12-05",
+                      "subscriptionType": "free",
+                      "country": "US"
+                    }
+            headers:
+                - name: Content-Type
+                  value: application/json
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Create user should return 201', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(201);
+                    });
+                    
+                    insomnia.test('Created user should have an ID', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.have.property('userId');
+                        insomnia.expect(body.userId).to.be.a('number');
+                    });
+                    
+                    insomnia.test('Created user should match request data', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.username).to.equal('testuser123');
+                        insomnia.expect(body.email).to.equal('test@example.com');
+                        insomnia.expect(body.subscriptionType).to.equal('free');
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/users/1"
+            name: Users - Update
+            meta:
+                id: req_users_update
+                created: 1733443200024
+                modified: 1733443200024
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200024
+            method: PUT
+            body:
+                mimeType: application/json
+                text: |
+                    {
+                      "username": "updateduser",
+                      "email": "updated@example.com",
+                      "signupDate": "2025-12-05",
+                      "subscriptionType": "premium",
+                      "country": "CA"
+                    }
+            headers:
+                - name: Content-Type
+                  value: application/json
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Update user should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Updated user should have same ID', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.userId).to.equal(1);
+                    });
+                    
+                    insomnia.test('Updated user should reflect changes', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.username).to.equal('updateduser');
+                        insomnia.expect(body.subscriptionType).to.equal('premium');
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/users/999"
+            name: Users - Delete
+            meta:
+                id: req_users_delete
+                created: 1733443200025
+                modified: 1733443200025
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200025
+            method: DELETE
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Delete non-existent user should return 404', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(404);
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/users/1/favorite-genre"
+            name: Users - Get Favorite Genre
+            meta:
+                id: req_users_favoritegenre
+                created: 1733443200044
+                modified: 1733443200044
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200044
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get favorite genre should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should have required fields', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.have.property('userId');
+                        insomnia.expect(body).to.have.property('username');
+                        insomnia.expect(body).to.have.property('favoriteGenre');
+                        insomnia.expect(body).to.have.property('playsInGenre');
+                    });
+                    
+                    insomnia.test('User ID should match requested user', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.userId).to.equal(1);
+                    });
+                    
+                    insomnia.test('Plays in genre should be positive', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.playsInGenre).to.be.a('number');
+                        insomnia.expect(body.playsInGenre).to.be.above(0);
+                    });
+                    
+                    insomnia.test('Favorite genre should be a string', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.favoriteGenre).to.be.a('string');
+                        insomnia.expect(body.favoriteGenre.length).to.be.above(0);
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/plays/user/1?limit=20"
+            name: Plays - Get User Recent Plays
+            meta:
+                id: req_plays_userrecent
+                created: 1733443200026
+                modified: 1733443200026
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200026
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get user plays should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('Plays should have required fields', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            insomnia.expect(body[0]).to.have.property('playId');
+                            insomnia.expect(body[0]).to.have.property('userId');
+                            insomnia.expect(body[0]).to.have.property('albumTitle');
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/plays/album/1"
+            name: Plays - Get Album Plays
+            meta:
+                id: req_plays_album
+                created: 1733443200027
+                modified: 1733443200027
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200027
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get album plays should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('All plays should be for album ID 1', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            body.forEach(play => {
+                                insomnia.expect(play.albumId).to.equal(1);
+                            });
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/plays/2"
+            name: Plays - Get by ID
+            meta:
+                id: req_plays_getbyid
+                created: 1733443200028
+                modified: 1733443200028
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200028
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Get play by ID should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Play should have correct ID', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.playId).to.equal(2);
+                    });
+                    
+                    insomnia.test('Play should have all required fields', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.have.property('userId');
+                        insomnia.expect(body).to.have.property('albumId');
+                        insomnia.expect(body).to.have.property('playedAt');
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/plays"
+            name: Plays - Create (Log Play)
+            meta:
+                id: req_plays_create
+                created: 1733443200029
+                modified: 1733443200029
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200029
+            method: POST
+            body:
+                mimeType: application/json
+                text: |
+                    {
+                      "userId": 1,
+                      "albumId": 1,
+                      "playedAt": "2025-12-05T10:30:00",
+                      "completed": true
+                    }
+            headers:
+                - name: Content-Type
+                  value: application/json
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Create play should return 201', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(201);
+                    });
+                    
+                    insomnia.test('Created play should have an ID', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.have.property('playId');
+                        insomnia.expect(body.playId).to.be.a('number');
+                    });
+                    
+                    insomnia.test('Created play should match request data', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body.userId).to.equal(1);
+                        insomnia.expect(body.albumId).to.equal(1);
+                        insomnia.expect(body.completed).to.be.true;
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/plays/999999"
+            name: Plays - Delete
+            meta:
+                id: req_plays_delete
+                created: 1733443200030
+                modified: 1733443200030
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200030
+            method: DELETE
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Delete non-existent play should return 404', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(404);
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/reports/daily-active-users"
+            name: Reports - Daily Active Users
+            meta:
+                id: req_reports_dau
+                created: 1733443200031
+                modified: 1733443200031
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200031
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Daily active users report should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('Report should have required fields', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            const data = body[0].data;
+                            insomnia.expect(data).to.have.property('activityDate');
+                            insomnia.expect(data).to.have.property('dailyActiveUsers');
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/reports/top-albums-month"
+            name: Reports - Top Albums This Month
+            meta:
+                id: req_reports_topalbums
+                created: 1733443200032
+                modified: 1733443200032
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200032
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Top albums report should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('Report should have required fields', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            const data = body[0].data;
+                            insomnia.expect(data).to.have.property('albumTitle');
+                            insomnia.expect(data).to.have.property('artistName');
+                            insomnia.expect(data).to.have.property('playCount');
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/reports/genre-popularity"
+            name: Reports - Genre Popularity
+            meta:
+                id: req_reports_genre
+                created: 1733443200033
+                modified: 1733443200033
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200033
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Genre popularity report should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('Report should have required fields', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            const data = body[0].data;
+                            insomnia.expect(data).to.have.property('genre');
+                            insomnia.expect(data).to.have.property('totalPlays');
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/reports/top-artists"
+            name: Reports - Top Artists
+            meta:
+                id: req_reports_topartists
+                created: 1733443200034
+                modified: 1733443200034
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200034
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('Top artists report should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Response should be an array', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('array');
+                    });
+                    
+                    insomnia.test('Report should have required fields', function() {
+                        const body = insomnia.response.json();
+                        if (body.length > 0) {
+                            const data = body[0].data;
+                            insomnia.expect(data).to.have.property('artistName');
+                            insomnia.expect(data).to.have.property('totalPlays');
+                        }
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+
+          - url: "{{baseUrl}}/api/reports/mapped/1"
+            name: Reports - MangoMusic Mapped
+            meta:
+                id: req_reports_mapped
+                created: 1733443200035
+                modified: 1733443200035
+                isPrivate: false
+                description: ""
+                sortKey: -1733443200035
+            method: GET
+            scripts:
+                preRequest: ""
+                afterResponse: |
+                    insomnia.test('MangoMusic Mapped report should return 200', function() {
+                        insomnia.expect(insomnia.response.code).to.equal(200);
+                    });
+                    
+                    insomnia.test('Report should be an object', function() {
+                        const body = insomnia.response.json();
+                        insomnia.expect(body).to.be.an('object');
+                    });
+                    
+                    insomnia.test('Report should have required fields', function() {
+                        const body = insomnia.response.json();
+                        const data = body.data;
+                        insomnia.expect(data).to.have.property('topArtist');
+                        insomnia.expect(data).to.have.property('totalPlays');
+                        insomnia.expect(data).to.have.property('listenerPersonality');
+                    });
+            settings:
+                renderRequestBody: true
+                encodeUrl: true
+                followRedirects: global
+                cookies:
+                    send: true
+                    store: true
+                rebuildPath: true
+      scripts:
+          afterResponse: ""
+          preRequest: ""
+      environment:
+          baseUrl: http://localhost:8080
+      environmentPropertyOrder:
+          "&":
+              - baseUrl
+cookieJar:
+    name: Default Jar
+    meta:
+        id: jar_mangomusic
+        created: 1733443200000
+        modified: 1733443200000
+    cookies: []
+environments:
+    name: Base Environment
+    meta:
+        id: env_mangomusic_base
+        created: 1733443200000
+        modified: 1733443200000
+        isPrivate: false
+    data:
+        baseUrl: http://localhost:8080
