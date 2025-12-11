@@ -170,9 +170,8 @@ public class UserDao {
 
         return null;
     }
-
-    public User updateUser(int userId, User user) {
-        String query = "UPDATE users SET username = ?, email = ?, signup_date = ?, subscription_type = ?, country = ?";
+    public void updateUser(int userId, User user) {
+        String query = "UPDATE users SET username = ?, email = ?, signup_date = ?, subscription_type = ?, country = ? WHERE user_id = ?";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -182,13 +181,9 @@ public class UserDao {
             statement.setObject(3, user.getSignupDate());
             statement.setString(4, user.getSubscriptionType());
             statement.setString(5, user.getCountry());
+            statement.setInt(6, userId);  // <- Critical WHERE clause parameter
 
-            int rowsAffected = statement.executeUpdate();
-            if (rowsAffected == 0) {
-                return null;
-            }
-
-            return getUserById(userId);
+            statement.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException("Error updating user", e);

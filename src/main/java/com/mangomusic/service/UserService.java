@@ -51,7 +51,8 @@ public class UserService {
 
     public User updateUser(int userId, User user) {
         validateUser(user);
-        return userDao.updateUser(userId, user);
+        userDao.updateUser(userId, user);
+        return userDao.getUserById(userId); // fetch updated user
     }
 
     public boolean deleteUser(int userId) {
