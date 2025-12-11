@@ -39,6 +39,11 @@ public class AlbumController {
     public ResponseEntity<List<Album>> getAlbumsByArtist(@PathVariable int artistId) {
         return ResponseEntity.ok(albumService.getAlbumsByArtist(artistId));
     }
+    @GetMapping("/{id}/play-count")
+    public ResponseEntity<Map<String, Object>> getPlayCount(@PathVariable int id) {
+        Map<String, Object> playCountData = albumService.getAlbumPlayCount(id);
+        return ResponseEntity.ok(playCountData);
+    }
 
     @GetMapping("/genre/{genre}")
     public ResponseEntity<List<Album>> getAlbumsByGenre(@PathVariable String genre) {
