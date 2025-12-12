@@ -9,8 +9,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import java.util.Map;
+import java.util.HashMap;
 @Repository
 public class AlbumPlayDao {
+
 
     private final DataSource dataSource;
 
@@ -77,6 +81,40 @@ public class AlbumPlayDao {
 
         return plays;
     }
+    public Map<String, Object> getAlbumPlayCount(int albumId) {
+        String query =
+                "SELECT al.album_id, al.title AS album_title, ar.name AS artist_name, " +
+                        "       COUNT(ap.play_id) AS play_count " +
+                        "FROM albums al " +
+                        "JOIN artists ar ON al.artist_id = ar.artist_id " +
+                        "LEFT JOIN album_plays ap ON al.album_id = ap.album_id " +
+                        "WHERE al.album_id = ? " +
+                        "GROUP BY al.album_id, al.title, ar.name";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, albumId);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    Map<String, Object> result = new HashMap<>();
+                    result.put("albumId", rs.getInt("album_id"));
+                    result.put("albumTitle", rs.getString("album_title"));
+                    result.put("artistName", rs.getString("artist_name"));
+                    result.put("playCount", rs.getInt("play_count"));
+                    return result;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error getting album play count", e);
+        }
+
+        return null;
+    }
+
+
 
     public AlbumPlay getPlayById(long playId) {
         String query = "SELECT ap.play_id, ap.user_id, ap.album_id, ap.played_at, ap.completed, " +

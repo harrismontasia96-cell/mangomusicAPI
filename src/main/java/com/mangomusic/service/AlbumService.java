@@ -2,7 +2,9 @@ package com.mangomusic.service;
 
 import com.mangomusic.dao.AlbumDao;
 import com.mangomusic.dao.ArtistDao;
+import com.mangomusic.dao.AlbumPlayDao;
 import com.mangomusic.model.Album;
+import com.mangomusic.model.AlbumPlay;
 import com.mangomusic.model.Artist;
 import org.springframework.stereotype.Service;
 
@@ -10,18 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-
-
-
 @Service
 public class AlbumService {
 
     private final AlbumDao albumDao;
     private final ArtistDao artistDao;
-    private final AlbumPlayDao albumPlayDao;   // <-- ADD THIS
+    private final AlbumPlayDao albumPlayDao;
 
-
-    public AlbumService(AlbumDao albumDao, ArtistDao artistDao) {
+    public AlbumService(AlbumDao albumDao, ArtistDao artistDao, AlbumPlayDao albumPlayDao) {
         this.albumDao = albumDao;
         this.artistDao = artistDao;
         this.albumPlayDao = albumPlayDao;
@@ -45,23 +43,26 @@ public class AlbumService {
 
 
     public Map<String, Object> getAlbumPlayCount(int albumId) {
-        // 1. Validate album exists
+
+
         Album album = albumDao.getAlbumById(albumId);
         if (album == null) {
-            throw new RuntimeException("Album not found");
+            return null;
         }
 
 
-        int playCount = albumPlayDao.getAlbumPlayCount(albumId);
+        Map<String, Object> dbResult = albumPlayDao.getAlbumPlayCount(albumId);
 
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("albumId", album.getAlbumId());
-        result.put("albumTitle", album.getTitle());
-        result.put("artistName", album.getArtistName());
-        result.put("playCount", playCount);
+        if (dbResult == null) {
+            dbResult = new HashMap<>();
+            dbResult.put("albumId", albumId);
+            dbResult.put("albumTitle", album.getTitle());
+            dbResult.put("artistName", album.getArtistName());
+            dbResult.put("playCount", 0);
+        }
 
-        return result;
+        return dbResult;
     }
 
     public void incrementPlayCount(int albumId) {
@@ -69,7 +70,7 @@ public class AlbumService {
         if (album == null) {
             throw new RuntimeException("Album not found");
         }
-        albumPlayDao.addPlay(albumId);
+        albumPlayDao.createPlay(new AlbumPlay());
     }
 
     public List<Album> searchAlbums(String searchTerm) {
@@ -126,7 +127,7 @@ public class AlbumService {
             if (album.getReleaseYear() < 1900 || album.getReleaseYear() > 2100) {
                 throw new IllegalArgumentException("Release year must be between 1900 and 2100");
             }
-
-            }
         }
     }
+}
+
