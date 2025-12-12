@@ -7,16 +7,24 @@ import com.mangomusic.model.Artist;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
+
+
 
 @Service
 public class AlbumService {
 
     private final AlbumDao albumDao;
     private final ArtistDao artistDao;
+    private final AlbumPlayDao albumPlayDao;   // <-- ADD THIS
+
 
     public AlbumService(AlbumDao albumDao, ArtistDao artistDao) {
         this.albumDao = albumDao;
         this.artistDao = artistDao;
+        this.albumPlayDao = albumPlayDao;
     }
 
     public List<Album> getAllAlbums() {
@@ -33,6 +41,35 @@ public class AlbumService {
 
     public List<Album> getAlbumsByGenre(String genre) {
         return albumDao.getAlbumsByGenre(genre);
+    }
+
+
+    public Map<String, Object> getAlbumPlayCount(int albumId) {
+        // 1. Validate album exists
+        Album album = albumDao.getAlbumById(albumId);
+        if (album == null) {
+            throw new RuntimeException("Album not found");
+        }
+
+
+        int playCount = albumPlayDao.getAlbumPlayCount(albumId);
+
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("albumId", album.getAlbumId());
+        result.put("albumTitle", album.getTitle());
+        result.put("artistName", album.getArtistName());
+        result.put("playCount", playCount);
+
+        return result;
+    }
+
+    public void incrementPlayCount(int albumId) {
+        Album album = albumDao.getAlbumById(albumId);
+        if (album == null) {
+            throw new RuntimeException("Album not found");
+        }
+        albumPlayDao.addPlay(albumId);
     }
 
     public List<Album> searchAlbums(String searchTerm) {
@@ -89,6 +126,7 @@ public class AlbumService {
             if (album.getReleaseYear() < 1900 || album.getReleaseYear() > 2100) {
                 throw new IllegalArgumentException("Release year must be between 1900 and 2100");
             }
+
+            }
         }
     }
-}

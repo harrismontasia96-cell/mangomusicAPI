@@ -39,6 +39,7 @@ public class AlbumController {
     public ResponseEntity<List<Album>> getAlbumsByArtist(@PathVariable int artistId) {
         return ResponseEntity.ok(albumService.getAlbumsByArtist(artistId));
     }
+
     @GetMapping("/{id}/play-count")
     public ResponseEntity<Map<String, Object>> getPlayCount(@PathVariable int id) {
         Map<String, Object> playCountData = albumService.getAlbumPlayCount(id);
@@ -81,4 +82,13 @@ public class AlbumController {
         }
         return ResponseEntity.noContent().build();
     }
+
+    // NEW: Add a play to this album
+    @PostMapping("/{albumId}/plays")
+    public ResponseEntity<Void> addPlay(@PathVariable int albumId) {
+        albumService.incrementPlayCount(albumId);
+        return ResponseEntity.ok().build();
+    }
 }
+
+

@@ -170,23 +170,23 @@ public class UserDao {
 
         return null;
     }
-    public void updateUser(int userId, User user) {
-        String query = "UPDATE users SET username = ?, email = ?, signup_date = ?, subscription_type = ?, country = ? WHERE user_id = ?";
 
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+    public void updateUser(int id, User user) {
+        String sql = "UPDATE users SET username = ?, email = ?, signupDate = ?, subscriptionType = ?, country = ? WHERE userId = ?";
 
-            statement.setString(1, user.getUsername());
-            statement.setString(2, user.getEmail());
-            statement.setObject(3, user.getSignupDate());
-            statement.setString(4, user.getSubscriptionType());
-            statement.setString(5, user.getCountry());
-            statement.setInt(6, userId);  // <- Critical WHERE clause parameter
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            statement.executeUpdate();
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getEmail());
+            stmt.setObject(3, user.getSignupDate());
+            stmt.setString(4, user.getSubscriptionType());
+            stmt.setString(5, user.getCountry());
+            stmt.setInt(6, id);
 
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Error updating user", e);
+            throw new RuntimeException("Error updating user: " + e.getMessage(), e);
         }
     }
 
