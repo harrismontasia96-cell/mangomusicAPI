@@ -70,6 +70,12 @@ public class AlbumService {
         if (album == null) {
             throw new RuntimeException("Album not found");
         }
+        AlbumPlay play = new AlbumPlay();
+        play.setAlbumId(albumId);
+        play.setUserId(1);
+        play.setCompleted(false);
+        play.setPlayedAt(java.time.LocalDateTime.now());
+
         albumPlayDao.createPlay(new AlbumPlay());
     }
 
