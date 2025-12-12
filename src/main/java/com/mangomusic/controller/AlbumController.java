@@ -89,6 +89,13 @@ public class AlbumController {
         }
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/trending")
+    public ResponseEntity<List<Map<String, Object>>> getTrendingAlbums(
+            @RequestParam(defaultValue = "7") int days) {
+
+        List<Map<String, Object>> trending = albumService.getTrendingAlbums(days);
+        return ResponseEntity.ok(trending);
+    }
 
 
     @PostMapping("/{albumId}/plays")
