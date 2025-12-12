@@ -28,6 +28,13 @@ public class AlbumService {
     public List<Album> getAllAlbums() {
         return albumDao.getAllAlbums();
     }
+    public List<Map<String, Object>> getTrendingAlbums(int days) {
+
+        if (days < 1) days = 1;
+        if (days > 30) days = 30;
+
+        return albumPlayDao.getTrendingAlbums(days);
+    }
 
     public Album getAlbumById(int albumId) {
         return albumDao.getAlbumById(albumId);

@@ -14,7 +14,48 @@ import java.util.Map;
 import java.util.HashMap;
 @Repository
 public class AlbumPlayDao {
+    public List<Map<String, Object>> getTrendingAlbums(int days) {
+        // Ensure days is between 1 and 30
+        if (days < 1) days = 1;
+        if (days > 30) days = 30;
 
+        String query = "SELECT al.album_id, al.artist_id, al.title, al.release_year, ar.name AS artist_name, " +
+                "       COUNT(ap.play_id) AS recent_play_count " +
+                "FROM albums al " +
+                "JOIN artists ar ON al.artist_id = ar.artist_id " +
+                "LEFT JOIN album_plays ap ON al.album_id = ap.album_id AND ap.played_at >= DATE_SUB(CURDATE(), INTERVAL ? DAY) " +
+                "GROUP BY al.album_id, al.artist_id, al.title, al.release_year, ar.name " +
+                "ORDER BY recent_play_count DESC " +
+                "LIMIT 10";
+
+        List<Map<String, Object>> trending = new ArrayList<>();
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, days);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                int rank = 1;
+                while (rs.next()) {
+                    Map<String, Object> album = new HashMap<>();
+                    album.put("albumId", rs.getInt("album_id"));
+                    album.put("artistId", rs.getInt("artist_id"));
+                    album.put("title", rs.getString("title"));
+                    album.put("releaseYear", rs.getInt("release_year"));
+                    album.put("artistName", rs.getString("artist_name"));
+                    album.put("recentPlayCount", rs.getInt("recent_play_count"));
+                    album.put("trendingRank", rank++);
+                    trending.add(album);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching trending albums", e);
+        }
+
+        return trending;
+    }
 
     private final DataSource dataSource;
 
